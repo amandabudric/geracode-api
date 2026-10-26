@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>Exemplo: API de código de barras do GeraCode</title>
+</head>
+<body>
+  <!-- EAN-13: mande os 12 primeiros dígitos, o verificador é calculado -->
+  <img src="https://www.geracodigo.com.br/api/v1/barcode?format=ean13&data=789123456789" alt="EAN-13 7891234567895">
+
+  <!-- Code 128 em SVG (sem limite de tamanho) -->
+  <img src="https://www.geracodigo.com.br/api/v1/barcode?format=code128&type=svg&data=SKU-00042" alt="Code 128 SKU-00042">
+
+  <!-- QR Code: o valor vai codificado com encodeURIComponent -->
+  <img src="https://www.geracodigo.com.br/api/v1/qr?size=300&data=https%3A%2F%2Fexemplo.com.br" alt="QR Code para exemplo.com.br">
+
+  <p><small>Código gerado com a <a href="https://www.geracodigo.com.br/api-codigo-de-barras">API grátis do GeraCode</a></small></p>
+</body>
+</html>
