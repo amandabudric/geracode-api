@@ -53,6 +53,13 @@ function geracode_barcode_img( $endpoint, array $params, $alt ) {
 }
 
 /**
+ * Valor do shortcode como a pessoa digitou: o editor guarda & como &amp; (e o wptexturize como &#038;).
+ */
+function geracode_barcode_data( $raw ) {
+	return trim( html_entity_decode( (string) $raw, ENT_QUOTES | ENT_HTML5, 'UTF-8' ) );
+}
+
+/**
  * [geracode_barcode format="ean13" data="789123456789" type="png" scale="3" height="15" text="1"]
  */
 function geracode_barcode_shortcode( $atts ) {
@@ -69,14 +76,15 @@ function geracode_barcode_shortcode( $atts ) {
 		$atts,
 		'geracode_barcode'
 	);
-	$data = trim( (string) $atts['data'] );
+	$data = geracode_barcode_data( $atts['data'] );
 	if ( '' === $data ) {
 		return '';
 	}
-	$params = array(
-		'format' => sanitize_key( $atts['format'] ),
-		'type'   => 'svg' === $atts['type'] ? 'svg' : 'png',
-	);
+	$params = array( 'format' => sanitize_key( $atts['format'] ) );
+	// PNG é o padrão da API: sem type, a URL é a mesma do site e aproveita o mesmo cache.
+	if ( 'svg' === $atts['type'] ) {
+		$params['type'] = 'svg';
+	}
 	foreach ( array( 'scale', 'height', 'text' ) as $key ) {
 		if ( '' !== $atts[ $key ] ) {
 			$params[ $key ] = (string) absint( $atts[ $key ] );
@@ -104,11 +112,11 @@ function geracode_qr_shortcode( $atts ) {
 		$atts,
 		'geracode_qr'
 	);
-	$data = trim( (string) $atts['data'] );
+	$data = geracode_barcode_data( $atts['data'] );
 	if ( '' === $data ) {
 		return '';
 	}
-	$params = array( 'type' => 'svg' === $atts['type'] ? 'svg' : 'png' );
+	$params = 'svg' === $atts['type'] ? array( 'type' => 'svg' ) : array();
 	foreach ( array( 'size', 'margin' ) as $key ) {
 		if ( '' !== $atts[ $key ] ) {
 			$params[ $key ] = (string) absint( $atts[ $key ] );
